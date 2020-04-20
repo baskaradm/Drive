@@ -114,8 +114,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IValidationDictionary.cs" />
+    <Compile Include="Interfaces\IVehicleMake.cs" />
     <Compile Include="Interfaces\IVehicleMakeRepository.cs" />
     <Compile Include="Interfaces\IVehicleMakeService.cs" />
+    <Compile Include="Interfaces\IVehicleModel.cs" />
     <Compile Include="Interfaces\IVehicleModelRepository.cs" />
     <Compile Include="Interfaces\IvehicleModelService.cs" />
     <Compile Include="Migrations\202004021709052_InitialCreate.cs" />

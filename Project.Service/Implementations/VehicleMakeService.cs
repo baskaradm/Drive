@@ -10,8 +10,7 @@ namespace Project.Service.Implementations
         private IValidationDictionary _validationDictionary;
 
         private readonly IVehicleMakeRepository _vehicleMakeRepository;
-
-
+       
         public VehicleMakeService(IValidationDictionary validationDictionary, IVehicleMakeRepository vehicleMakeRepository)
         {
             _validationDictionary = validationDictionary;

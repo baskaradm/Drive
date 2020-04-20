@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Project.Service.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
 namespace Project.Service.Domain
 {
-    public class VehicleMake 
+    public class VehicleMake : IVehicleMake
     {
         public int ID { get; set; }
 

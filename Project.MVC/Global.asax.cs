@@ -1,8 +1,11 @@
 ﻿using Autofac;
+using Autofac.Features.ResolveAnything;
 using Autofac.Integration.Mvc;
-using Project.Service;
+using AutoMapper;
+using Project.MVC.App_Start;
 using Project.Service.Implementations;
 using Project.Service.Interfaces;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -17,22 +20,26 @@ namespace Project.MVC
             ContainerBuilder builder = new ContainerBuilder();
 
             //Register all  MVC controllers automatically
-            builder.RegisterControllers(typeof(MvcApplication).Assembly).InstancePerRequest();
+            builder.RegisterControllers(typeof(MvcApplication).Assembly).InstancePerRequest().PropertiesAutowired();
 
-            //Register Components 
-            builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>();
-            builder.RegisterType<VehicleMakeRepository>().As<IVehicleMakeRepository>();
-            builder.RegisterType<ModelStateWrapper>().As<IValidationDictionary>();
-            builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
-            builder.RegisterType<VehicleModelRepository>().As<IVehicleModelRepository>();
-           
+            
+
+            builder.RegisterModule<DependencyInjectionModule>();
+
+            
+            builder.RegisterModule(new AutoMapperModule());
+
+            
+
+            //builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+
+
             //Building the container
             IContainer container = builder.Build();
-           
-            //Instruct MVC to resolve controllers using the container and take care of caching container between
-            //two requests
+            //Instruct MVC to resolve controllers using the container and take care of caching container  in between
+            //requests
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-
+            AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Project.Service.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project.Service.Domain
 {
-    public class VehicleModel
+    public class VehicleModel : IVehicleModel
     {
         public int ID { get; set; }
 

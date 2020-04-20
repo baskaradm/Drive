@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PagedList;
-using Project.MVC.Infrastructure;
+using Project.MVC.App_Start;
 using Project.MVC.ViewModels;
 using Project.Service;
 using Project.Service.Domain;

@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using PagedList;
-using Project.MVC.Infrastructure;
 using Project.MVC.ViewModels;
-using Project.Service;
 using Project.Service.Domain;
-using Project.Service.Implementations;
 using Project.Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,19 +20,8 @@ namespace Project.MVC.Controllers
 
         private readonly IVehicleMakeService _vehicleMakeService;
         private readonly IMapper _mapper;
-
-       
-        public VehicleMakeController()
-        {
-            _vehicleMakeService = new VehicleMakeService(new ModelStateWrapper(this.ModelState),
-            new VehicleMakeRepository());
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-            _mapper = new Mapper(config);
-        }
+        
+      
 
 
         public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper)

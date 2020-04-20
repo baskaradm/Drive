@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using AutoMapper;
-using Project.Service;
+﻿using AutoMapper;
 using Project.MVC.ViewModels;
 using Project.Service.Domain;
 
-using Autofac;
-using System.Reflection;
-
-namespace Project.MVC.Infrastructure
+namespace Project.MVC.App_Start
 {
     public class AutoMapperProfile : Profile
     {
