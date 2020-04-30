@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using PagedList;
-using Project.MVC.App_Start;
 using Project.MVC.ViewModels;
-using Project.Service;
 using Project.Service.Domain;
-using Project.Service.Implementations;
+using Project.Service.Infrastructure.Helpers;
 using Project.Service.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -23,18 +20,6 @@ namespace Project.MVC.Controllers
         private readonly IMapper _mapper;
         private IVehicleModelService _vehicleModelService;
 
-        public VehicleModelController()
-        {
-            _vehicleModelService = new VehicleModelService(new ModelStateWrapper(this.ModelState),
-            new VehicleModelRepository());
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-            _mapper = new Mapper(config);
-        }
-
         public VehicleModelController(IVehicleModelService vehicleModelService, IMapper mapper)
         {
             _mapper = mapper;
@@ -45,42 +30,21 @@ namespace Project.MVC.Controllers
         // GET: VehicleModel
         public async Task<ActionResult> Index(string sortBy, string currentFilter, string searchString, int? page)
         {
+            Filtering filters = new Filtering(searchString, currentFilter);
+            Sorting sorting = new Sorting(sortBy);
+            Paging paging = new Paging(page);
 
-            ViewBag.CurrentSort = sortBy;
-            ViewBag.SortByName = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
-            ViewBag.SortByAbbreviation = sortBy == "Abbreviation" ? "abbreviation_desc" : "Abbreviation";
-            ViewBag.SortById = sortBy == "VehicleMakeId" ? "vehiclemakeid_desc" : "VehicleMakeId";
-
-            if (searchString != null)
-            {
-
-                page = 1;
-            }
-
-            else
-            {
-
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
-
-            
-
-            
-
-
-            int pageSize = 3;
-            int pageNumber = (page ?? 1);
-
-            var vehicleModels = await _vehicleModelService.GetVehicleModelsAsync(sortBy, currentFilter, searchString);
-
+            IEnumerable<VehicleModel> vehicleModels = await _vehicleModelService.GetVehicleModelsAsync(filters, sorting, paging );
             var vehicles = vehicleModels.ToList();
 
-            List<VehicleModelViewModel> listVehicleModelViewModels =
-              _mapper.Map<List<VehicleModelViewModel>>(vehicles);
+            IEnumerable<VehicleModelViewModel> listVehicleModelViewModels =
+            _mapper.Map<IEnumerable<VehicleModelViewModel>>(vehicles);
 
-            return View(model: listVehicleModelViewModels.ToPagedList(pageNumber, pageSize));
+            StaticPagedList<VehicleModelViewModel> paginatedVehicles = new StaticPagedList<VehicleModelViewModel>(listVehicleModelViewModels, paging.Page ?? 1, paging.NumberOfObjectsPerPage, paging.TotalCount);
+
+            UpdateView(ViewBag, filters, sorting, paging);
+
+            return View(paginatedVehicles);
         } 
 
 
@@ -239,6 +203,25 @@ namespace Project.MVC.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+        private void UpdateView(dynamic ViewBag, Filtering filters, Sorting sorting, Paging paging)
+        {
+            ViewBag.CurrentSort = sorting.SortBy;
+            ViewBag.SortByName = sorting.SortByName;
+            ViewBag.SortByAbbreviation = sorting.SortByAbbreviation;
+            if (filters.SearchString != null)
+            {
+
+                paging.Page = 1;
+            }
+
+            else
+            {
+
+                filters.SearchString = filters.CurrentFilter;
+            }
+
+            ViewBag.CurrentFilter = filters.SearchString;
         }
 
     }

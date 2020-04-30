@@ -1,29 +1,36 @@
 ﻿using Project.Service.Domain;
+using Project.Service.Infrastructure.Helpers;
 using Project.Service.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+
 namespace Project.Service.Implementations
 {
     public class VehicleMakeRepository : IVehicleMakeRepository
     {
-        private VehicleContext _datacontext = new VehicleContext();
+        private  readonly VehicleContext _datacontext = new VehicleContext();
 
 
-       public async Task <IEnumerable<VehicleMake>> GetVehicleMakes(string sortBy, string currentFilter, string searchString)
+       public async Task <IEnumerable<VehicleMake>> GetVehicleMakes(Filtering filters, Sorting sorting, Paging paging)
        {
-
-            var vehicleMakes = from v in _datacontext.VehicleMakes
+           
+           IQueryable<VehicleMake> vehicleMakes = from v in _datacontext.VehicleMakes
                                select v;
 
-            if (!String.IsNullOrEmpty(searchString))
+            //Find/Filter vehicle by name or abbreviation
+            if (filters.ShouldApplyFilters())
             {
-                vehicleMakes = vehicleMakes.Where(v => v.Name.Contains(searchString)
-                                               || v.Abbreviation.Contains(searchString));
+                vehicleMakes = vehicleMakes.Where(v => v.Name.Contains(filters.FilterBy)
+                                               || v.Abbreviation.Contains(filters.FilterBy));
             }
-            switch (sortBy)
+            
+            paging.TotalCount = vehicleMakes.Count();
+
+            //Sorting
+            switch (sorting.SortBy)
             {
                 case "name_desc":
                     vehicleMakes = vehicleMakes.OrderByDescending(v => v.Name);
@@ -39,8 +46,8 @@ namespace Project.Service.Implementations
                     break;
             }
 
-
-            return await vehicleMakes.ToListAsync();
+            
+            return await vehicleMakes.Skip(paging.ItemsToSkip).Take(paging.NumberOfObjectsPerPage).ToListAsync();
 
         }
 

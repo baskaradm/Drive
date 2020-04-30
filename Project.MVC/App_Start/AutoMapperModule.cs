@@ -3,56 +3,47 @@ using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Web;
+
+//Set up and register the AutoMapper IMapper interface with our Inversion of Control container, 
+//in this case Autofac.  I've used an Autofac Module here to configure the mapper 
 
 namespace Project.MVC.App_Start
 {
-    public class AutoMapperModule : Autofac.Module
+    //Defining a module:
+    public class AutoMapperModule : Module
     {
-
-        private readonly IEnumerable<Assembly> assembliesToScan;
-        public AutoMapperModule(IEnumerable<Assembly> assembliesToScan)
-        {
-            this.assembliesToScan = assembliesToScan;
-        }
-
-        public AutoMapperModule(params Assembly[] assembliesToScan) : this((IEnumerable<Assembly>)assembliesToScan) { }
-
+        //override to add registrations to the container.
         protected override void Load(ContainerBuilder builder)
         {
-            base.Load(builder);
-            var assembliesToScan = this.assembliesToScan as Assembly[] ?? this.assembliesToScan.ToArray();
+            //In this module we have firstly scanned through all assemblies in our project and
+            //registered all our AutoMapper profile
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            builder.RegisterAssemblyTypes(assemblies)
+                .Where(t => typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract && t.IsPublic)
+                .As<Profile>();
 
-            var allTypes = assembliesToScan
-                          .Where(a => !a.IsDynamic && a.GetName().Name != nameof(AutoMapper))
-                          .Distinct() // avoid AutoMapper.DuplicateTypeMapConfigurationException
-                          .SelectMany(a => a.DefinedTypes)
-                          .ToArray();
+            //Then we add these profiles to an AutoMapper MapperConfiguration
 
-            var openTypes = new[] {
-                            typeof(IValueResolver<,,>),
-                            typeof(IMemberValueResolver<,,,>),
-                            typeof(ITypeConverter<,>),
-                            typeof(IValueConverter<,>),
-                            typeof(IMappingAction<,>)
-            };
-
-            foreach (var type in openTypes.SelectMany(openType =>
-             allTypes.Where(t => t.IsClass && !t.IsAbstract && ImplementsGenericInterface(t.AsType(), openType))))
+            //register configuration as a a single instance
+            builder.Register(c => new MapperConfiguration(cfg =>
             {
-                builder.RegisterType(type.AsType()).InstancePerDependency();
-            }
+                //add profile(either resolve from container or however else we acquire them)
+                foreach (var profile in c.Resolve<IEnumerable<Profile>>())
+                {
+                    cfg.AddProfile(profile);
+                }
+            })).AsSelf().SingleInstance();
 
-            builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(assembliesToScan))).SingleInstance();
-
-            builder.Register<IMapper>(ctx => new Mapper(ctx.Resolve<IConfigurationProvider>(), ctx.Resolve)).InstancePerDependency();
+            //Register our mapper
+            //Here we are register the IMapper interface, which will resolve to a new instance of
+            //the mapper using the registered MapperConfiguration.Once this is done we can change
+            //our initial Controller(VehicleMake/VehicleModel) to inject IMapper interface and use 
+            //it to map our objects
+            builder.Register(c => c.Resolve<MapperConfiguration>()
+                .CreateMapper(c.Resolve))
+                .As<IMapper>()
+                .InstancePerLifetimeScope();
+            
         }
-
-        private static bool ImplementsGenericInterface(Type type, Type interfaceType)
-                  => IsGenericType(type, interfaceType) || type.GetTypeInfo().ImplementedInterfaces.Any(@interface => IsGenericType(@interface, interfaceType));
-
-        private static bool IsGenericType(Type type, Type genericType)
-                  => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == genericType;
     }
 }

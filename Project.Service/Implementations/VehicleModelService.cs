@@ -1,4 +1,5 @@
 ﻿using Project.Service.Domain;
+using Project.Service.Infrastructure.Helpers;
 using Project.Service.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,10 +39,10 @@ namespace Project.Service.Implementations
 
         }
 
-        public async Task <IEnumerable<VehicleModel>>GetVehicleModelsAsync(string sortBy, string currentFilter, string searchString)
+        public async Task <IEnumerable<VehicleModel>>GetVehicleModelsAsync(Filtering filters, Sorting sorting, Paging paging)
         {
 
-            return await _vehicleModelRepository.GetVehicleModels(sortBy, currentFilter,  searchString);
+            return await _vehicleModelRepository.GetVehicleModels(filters,  sorting,  paging);
         }
 
         public async Task <VehicleModel>GetVehicleModelByIDAsync(int? id)

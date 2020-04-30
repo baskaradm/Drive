@@ -1,10 +1,12 @@
 ﻿using Project.Service.Domain;
+using Project.Service.Infrastructure.Helpers;
 using Project.Service.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+
 namespace Project.Service.Implementations
 {
     public class VehicleModelRepository : IVehicleModelRepository
@@ -12,20 +14,19 @@ namespace Project.Service.Implementations
         private VehicleContext _datacontext = new VehicleContext();
 
 
-        public async Task<IEnumerable<VehicleModel>> GetVehicleModels(string sortBy, string currentFilter, string searchString)
+        public async Task<IEnumerable<VehicleModel>> GetVehicleModels(Filtering filters, Sorting sorting, Paging paging)
         {
-            var vehicleModels = from v in  _datacontext.VehicleModels
+           IQueryable<VehicleModel> vehicleModels = from v in  _datacontext.VehicleModels
                                 select v;
-
-            if (!String.IsNullOrEmpty(searchString))
+            if (filters.ShouldApplyFilters())
             {
-                vehicleModels = vehicleModels.Where(v => v.Name.Contains(searchString)
-
-                                                         || v.Abbreviation.Contains(searchString)
-                                                         || v.VehicleMakeId.ToString().Contains(searchString));
+                vehicleModels = vehicleModels.Where(v => v.Name.Contains(filters.FilterBy)
+                                                  || v.Abbreviation.Contains(filters.FilterBy)
+                                                  || v.VehicleMakeId.ToString().Contains(filters.FilterBy));
             }
 
-            switch (sortBy)
+            paging.TotalCount = vehicleModels.Count();
+            switch (sorting.SortBy)
             {
 
                 case "name_desc":
@@ -54,7 +55,7 @@ namespace Project.Service.Implementations
 
                     
             }
-            return await vehicleModels.ToListAsync();
+            return await vehicleModels.Skip(paging.ItemsToSkip).Take(paging.NumberOfObjectsPerPage).ToListAsync();
         }
 
         public async Task <VehicleModel> GetVehicleModelByID(int? id)

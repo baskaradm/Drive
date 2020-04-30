@@ -113,6 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Helpers\Filtering.cs" />
+    <Compile Include="Infrastructure\Helpers\Paging.cs" />
+    <Compile Include="Infrastructure\Helpers\Sorting.cs" />
+    <Compile Include="Interfaces\IFiltering.cs" />
+    <Compile Include="Interfaces\IPaging.cs" />
+    <Compile Include="Interfaces\ISorting.cs" />
     <Compile Include="Interfaces\IValidationDictionary.cs" />
     <Compile Include="Interfaces\IVehicleMake.cs" />
     <Compile Include="Interfaces\IVehicleMakeRepository.cs" />

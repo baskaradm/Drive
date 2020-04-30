@@ -9,6 +9,7 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            ContextKey = "Project.Service.VehicleContext";
         }
 
         protected override void Seed(Project.Service.VehicleContext context)

@@ -1,4 +1,5 @@
 ﻿using Project.Service.Domain;
+using Project.Service.Infrastructure.Helpers;
 using Project.Service.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace Project.Service.Implementations
 {
     public class VehicleMakeService : IVehicleMakeService
     {
-        private IValidationDictionary _validationDictionary;
+        private readonly IValidationDictionary _validationDictionary;
 
         private readonly IVehicleMakeRepository _vehicleMakeRepository;
        
@@ -35,10 +36,10 @@ namespace Project.Service.Implementations
         }
 
 
-        public async Task <IEnumerable<VehicleMake>> GetVehicleMakesAsync(string sortBy, string currentFilter, string searchString)
+        public async Task <IEnumerable<VehicleMake>> GetVehicleMakesAsync(Filtering filters, Sorting sorting, Paging paging)
         {
 
-            return await _vehicleMakeRepository.GetVehicleMakes(sortBy,  currentFilter,  searchString);
+            return await _vehicleMakeRepository.GetVehicleMakes(filters,  sorting,  paging);
         }
 
         public async Task <VehicleMake> GetVehicleMakeByIDAsync(int? id)
