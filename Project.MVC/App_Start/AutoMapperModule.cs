@@ -14,10 +14,7 @@ namespace Project.MVC.App_Start
         //override to add registrations to the container.
         protected override void Load(ContainerBuilder builder)
         {
-            //In this module we have firstly scanned through all assemblies in our project and
-            //registered all our AutoMapper profiles
-            builder.RegisterAssemblyTypes().AssignableTo(typeof(Profile));
-
+            
             //In this module we have firstly scanned through all assemblies in our project and
             //registered all our AutoMapper profiles
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
