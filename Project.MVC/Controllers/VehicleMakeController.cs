@@ -38,7 +38,7 @@ namespace Project.MVC.Controllers
             Sorting sorting = new Sorting(sortBy);
             Paging paging = new Paging(page);
 
-           var vehicleMakes = await  _vehicleMakeService.GetVehicleMakesAsync(filters, sorting, paging);
+            var vehicleMakes = await  _vehicleMakeService.GetVehicleMakesAsync(filters, sorting, paging);
 
             List<VehicleMakeViewModel> listVehicleMakeViewModels =
             _mapper.Map<List<VehicleMakeViewModel>>(vehicleMakes);

@@ -14,15 +14,15 @@ namespace Project.MVC
             // Creating  ContainerBuilder class
             ContainerBuilder builder = new ContainerBuilder();
 
-            //Register all  MVC controllers automatically and we need tell Autofac dispose yourself 
-            // when the web requests is done and release classes that you may be holding onto
-            builder.RegisterControllers(typeof(MvcApplication).Assembly).InstancePerRequest();
-    
             //Register DIModule
             builder.RegisterModule<DependencyInjectionModule>();
 
             //Register AutoMapperModule
             builder.RegisterModule<AutoMapperModule>();
+            
+            //Register all  MVC controllers automatically and we need tell Autofac dispose yourself 
+            // when the web requests is done and release classes that you may be holding onto
+            builder.RegisterControllers(typeof(MvcApplication).Assembly).InstancePerRequest();
 
             //Building the container
             IContainer container = builder.Build();

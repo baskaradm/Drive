@@ -6,7 +6,6 @@ using System.Linq;
 
 //Set up and register the AutoMapper IMapper interface with our Inversion of Control container, 
 //in this case Autofac.  I've used an Autofac Module here to configure the mapper 
-
 namespace Project.MVC.App_Start
 {
     //Defining a module:
@@ -16,12 +15,16 @@ namespace Project.MVC.App_Start
         protected override void Load(ContainerBuilder builder)
         {
             //In this module we have firstly scanned through all assemblies in our project and
-            //registered all our AutoMapper profile
+            //registered all our AutoMapper profiles
+            builder.RegisterAssemblyTypes().AssignableTo(typeof(Profile));
+
+            //In this module we have firstly scanned through all assemblies in our project and
+            //registered all our AutoMapper profiles
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(t => typeof(Profile).IsAssignableFrom(t) && !t.IsAbstract && t.IsPublic)
                 .As<Profile>();
-
+            
             //Then we add these profiles to an AutoMapper MapperConfiguration
 
             //register configuration as a a single instance

@@ -6,9 +6,12 @@ namespace Project.Service
 {
     public class ModelStateWrapper : IValidationDictionary
     {
-        public ModelStateDictionary _modelState  { get;  set;}
+        private ModelStateDictionary _modelState;
 
-        public  ModelStateWrapper(){}
+        public ModelStateWrapper(ModelStateDictionary modelState)
+        {
+            _modelState = modelState;
+        }
 
         public void AddError(string key, string errorMessage)
         {

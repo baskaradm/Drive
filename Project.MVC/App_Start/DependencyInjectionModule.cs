@@ -6,8 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 
 namespace Project.MVC.App_Start
-{
-
+{ 
 
     public class DependencyInjectionModule : Module
     {
@@ -50,11 +49,12 @@ namespace Project.MVC.App_Start
             //and the interface does not have the same name
             builder.RegisterType<ModelStateWrapper>().As<IValidationDictionary>().InstancePerRequest();
 
-            //No interface here, just registering concrete class
-            builder.RegisterType<ModelStateDictionary>().As<ModelStateDictionary>().InstancePerRequest();
+            //// Register instance of object we create
+            var output = new ModelStateDictionary();
+            builder.RegisterInstance(output).As<ModelStateDictionary>();
+
         }
     }
-
 
 }      
     
