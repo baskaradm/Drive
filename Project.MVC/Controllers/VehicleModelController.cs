@@ -204,6 +204,8 @@ namespace Project.MVC.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [NonAction]
         private void UpdateView(dynamic ViewBag, Filtering filters, Sorting sorting, Paging paging)
         {
             ViewBag.CurrentSort = sorting.SortBy;

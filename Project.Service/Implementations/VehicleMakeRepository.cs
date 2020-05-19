@@ -11,7 +11,13 @@ namespace Project.Service.Implementations
 {
     public class VehicleMakeRepository : IVehicleMakeRepository
     {
-        private  readonly VehicleContext _datacontext = new VehicleContext();
+        
+        private VehicleContext _datacontext;
+
+        public VehicleMakeRepository(VehicleContext datacontext)
+        {
+            _datacontext = datacontext;
+        }
 
 
        public async Task <IEnumerable<VehicleMake>> GetVehicleMakes(Filtering filters, Sorting sorting, Paging paging)

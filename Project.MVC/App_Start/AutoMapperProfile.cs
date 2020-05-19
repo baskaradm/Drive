@@ -9,7 +9,6 @@ namespace Project.MVC.App_Start
 {
     public class AutoMapperProfile : Profile
     {
-        
         public AutoMapperProfile()
         {
             

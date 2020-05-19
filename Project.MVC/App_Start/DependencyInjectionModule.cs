@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using Autofac.Features.ResolveAnything;
 using Project.Service;
 using Project.Service.Implementations;
 using Project.Service.Interfaces;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -53,6 +55,9 @@ namespace Project.MVC.App_Start
             var output = new ModelStateDictionary();
             builder.RegisterInstance(output).As<ModelStateDictionary>();
 
+            //Context registration
+            builder.RegisterType<VehicleContext>().AsSelf().As<DbContext>().InstancePerLifetimeScope();
+            
         }
     }
 
