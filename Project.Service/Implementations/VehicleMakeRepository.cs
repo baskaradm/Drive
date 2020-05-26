@@ -95,16 +95,21 @@ namespace Project.Service.Implementations
                 return false;
             }
         }
-
+        
+        
         public async Task <bool> EditVehicle(VehicleMake vehicleMakeToUpdate)
         {
+           
+            
             try
             {
+                
                 await _datacontext.SaveChangesAsync();
 
                 return true;
             }
 
+           
             catch
             {
                 return false;

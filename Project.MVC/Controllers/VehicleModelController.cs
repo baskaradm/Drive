@@ -34,29 +34,28 @@ namespace Project.MVC.Controllers
             Sorting sorting = new Sorting(sortBy);
             Paging paging = new Paging(page);
 
-            IEnumerable<VehicleModel> vehicleModels = await _vehicleModelService.GetVehicleModelsAsync(filters, sorting, paging );
-            var vehicles = vehicleModels.ToList();
-
+            IEnumerable<VehicleModel> vehicleModels = await _vehicleModelService.GetVehicleModelsAsync(filters, sorting, paging);
+            
             IEnumerable<VehicleModelViewModel> listVehicleModelViewModels =
-            _mapper.Map<IEnumerable<VehicleModelViewModel>>(vehicles);
+            _mapper.Map<IEnumerable<VehicleModelViewModel>>(vehicleModels);
 
-            StaticPagedList<VehicleModelViewModel> paginatedVehicles = new StaticPagedList<VehicleModelViewModel>(listVehicleModelViewModels, paging.Page ?? 1, paging.NumberOfObjectsPerPage, paging.TotalCount);
+            IPagedList<VehicleModelViewModel> paginatedVehicles = new StaticPagedList<VehicleModelViewModel>(listVehicleModelViewModels, paging.Page ?? 1, paging.NumberOfObjectsPerPage, paging.TotalCount);
 
             UpdateView(ViewBag, filters, sorting, paging);
 
             return View(paginatedVehicles);
-        } 
+        }
 
 
         // GET: VehicleModel/Details/1
-        public async Task <ActionResult> Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            VehicleModel vehicleModel =  await _vehicleModelService.GetVehicleModelByIDAsync(id);
+            VehicleModel vehicleModel = await _vehicleModelService.GetVehicleModelByIDAsync(id);
 
             if (vehicleModel == null)
             {
@@ -80,22 +79,22 @@ namespace Project.MVC.Controllers
         // POST: VehicleModel/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <ActionResult> Create([Bind(Include = "Id, Name,Abbreviation,VehicleMakeId")] VehicleModel vehicleModelToInsert)
+        public async Task<ActionResult> Create([Bind(Include = "Id, Name,Abbreviation,VehicleMakeId")] VehicleModel vehicleModelToInsert)
         {
             if (!await _vehicleModelService.CreateVehicleModel(vehicleModelToInsert))
-            
-              
-                return View ( _mapper.Map<VehicleModelViewModel>(vehicleModelToInsert));
-               
-            
-           
+
+
+                return View(_mapper.Map<VehicleModelViewModel>(vehicleModelToInsert));
+
+
+
             return RedirectToAction("Index");
-     
+
         }
 
 
         // GET: VehicleModel/Edit/1
-        public async Task <ActionResult> Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -119,7 +118,7 @@ namespace Project.MVC.Controllers
         // POST: VehicleModel/Edit/1
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task <ActionResult> EditVehicleModel(int? id)
+        public async Task<ActionResult> EditVehicleModel(int? id)
         {
             if (id == null)
             {
@@ -129,7 +128,7 @@ namespace Project.MVC.Controllers
 
             var vehicleModelToUpdate = await _vehicleModelService.GetVehicleModelByIDAsync(id);
 
-            if (TryUpdateModel(vehicleModelToUpdate, "", new string[] {"VehicleMakeId", "Name", "Abbreviation"}))
+            if (TryUpdateModel(vehicleModelToUpdate, "", new string[] { "VehicleMakeId", "Name", "Abbreviation" }))
             {
                 try
                 {
@@ -154,7 +153,7 @@ namespace Project.MVC.Controllers
 
 
         // GET: VehicleModel/Delete/1
-        public async Task <ActionResult> Delete(int? id, bool? saveChangesError = false)
+        public async Task<ActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -165,7 +164,7 @@ namespace Project.MVC.Controllers
             if (saveChangesError.GetValueOrDefault())
             {
 
-                ViewBag.ErrorMessage ="Failed to delete the item. Please try again.";
+                ViewBag.ErrorMessage = "Failed to delete the item. Please try again.";
             }
 
             VehicleModel vehicleModel = await _vehicleModelService.GetVehicleModelByIDAsync(id);
@@ -184,21 +183,21 @@ namespace Project.MVC.Controllers
 
 
         // POST: VehicleModel/Delete/1
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task <ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
                 VehicleModel vehicleModel = await _vehicleModelService.GetVehicleModelByIDAsync(id);
                 await _vehicleModelService.DeleteVehicleModel(vehicleModel);
-                
+
             }
 
             catch (DataException)
             {
 
-                return RedirectToAction("Delete", new {id = id, saveChangesError = true});
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
 
             }
 
@@ -229,8 +228,3 @@ namespace Project.MVC.Controllers
     }
 
 }
-
-
-
-
-

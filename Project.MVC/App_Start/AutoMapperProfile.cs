@@ -12,8 +12,8 @@ namespace Project.MVC.App_Start
         public AutoMapperProfile()
         {
             
-            CreateMap<VehicleMake, VehicleMakeViewModel>();
-            CreateMap<VehicleModel, VehicleModelViewModel>();
+            CreateMap<VehicleMake, VehicleMakeViewModel>().ReverseMap();
+            CreateMap<VehicleModel, VehicleModelViewModel>().ReverseMap();
         }
         
     }

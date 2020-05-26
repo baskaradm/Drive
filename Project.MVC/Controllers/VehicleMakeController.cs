@@ -43,6 +43,8 @@ namespace Project.MVC.Controllers
             List<VehicleMakeViewModel> listVehicleMakeViewModels =
             _mapper.Map<List<VehicleMakeViewModel>>(vehicleMakes);
 
+            
+
             IPagedList<VehicleMakeViewModel> paginatedVehicles = new StaticPagedList<VehicleMakeViewModel>(listVehicleMakeViewModels, paging.Page ?? 1, paging.NumberOfObjectsPerPage, paging.TotalCount);
             UpdateView(ViewBag, filters, sorting, paging);
 
@@ -67,7 +69,7 @@ namespace Project.MVC.Controllers
             }
 
             var vehicleMakeViewModels = _mapper.Map<VehicleMakeViewModel>(vehicleMake);
-
+            
             return View(vehicleMakeViewModels);
         }
 
@@ -88,7 +90,7 @@ namespace Project.MVC.Controllers
             {
 
                 return View(_mapper.Map<VehicleMakeViewModel>(vehicleMakeToInsert));
-
+                
             }
 
             return RedirectToAction("Index");
@@ -112,6 +114,7 @@ namespace Project.MVC.Controllers
             }
 
             VehicleMakeViewModel vehicleMakeViewModels = _mapper.Map<VehicleMakeViewModel>(vehicleMake);
+           
 
             return View(vehicleMakeViewModels);
 
@@ -134,6 +137,7 @@ namespace Project.MVC.Controllers
                 try
                 {
                     await _vehicleMakeService.EditVehicle(vehicleMakeToUpdate);
+                    
 
                     return RedirectToAction("Index");
                 }
@@ -145,9 +149,9 @@ namespace Project.MVC.Controllers
             }
 
             VehicleMakeViewModel vehicleMakeViewModels = _mapper.Map<VehicleMakeViewModel>(vehicleMakeToUpdate);
-
+            
             return View(vehicleMakeViewModels);
-
+       
         }
 
 
