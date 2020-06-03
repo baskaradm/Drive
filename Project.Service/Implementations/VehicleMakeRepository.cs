@@ -12,7 +12,7 @@ namespace Project.Service.Implementations
     public class VehicleMakeRepository : IVehicleMakeRepository
     {
         
-        private VehicleContext _datacontext;
+        private readonly VehicleContext _datacontext;
 
         public VehicleMakeRepository(VehicleContext datacontext)
         {
@@ -99,11 +99,13 @@ namespace Project.Service.Implementations
         
         public async Task <bool> EditVehicle(VehicleMake vehicleMakeToUpdate)
         {
-           
+            
             
             try
             {
-                
+
+                var entry = _datacontext.Entry(vehicleMakeToUpdate);
+                entry.State = EntityState.Modified;
                 await _datacontext.SaveChangesAsync();
 
                 return true;

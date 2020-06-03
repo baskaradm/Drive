@@ -11,7 +11,7 @@ namespace Project.Service.Implementations
 {
     public class VehicleModelRepository : IVehicleModelRepository
     {
-        private VehicleContext _datacontext;
+        private readonly VehicleContext _datacontext;
 
         public VehicleModelRepository(VehicleContext datacontext)
         {
@@ -104,8 +104,9 @@ namespace Project.Service.Implementations
         {
             try
             {
-               await _datacontext.SaveChangesAsync();
-
+                var entry = _datacontext.Entry(vehicleModelToUpdate);
+                entry.State = EntityState.Modified;
+                await _datacontext.SaveChangesAsync();
                 return true;
             }
 

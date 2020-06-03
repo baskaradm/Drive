@@ -56,7 +56,7 @@ namespace Project.MVC.App_Start
             builder.RegisterInstance(output).As<ModelStateDictionary>();
 
             //Context registration
-            builder.RegisterType<VehicleContext>().AsSelf().As<DbContext>().InstancePerLifetimeScope();
+            builder.RegisterType<VehicleContext>().InstancePerRequest();
             
         }
     }
